@@ -20,11 +20,17 @@ jobs:
     defaults:
       run:
         shell: bash
-#        working-directory: ./terraform
+        working-directory: ./terraform
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Sanity check
+      run: |
+        echo "hello world"
+        echo "it works"
+        echo $TF_STATE_BUCKET
 
     - name: Configure Terraform Backend
       run: |
