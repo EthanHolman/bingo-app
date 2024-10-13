@@ -26,22 +26,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Sanity check
-      run: |
-        echo "hello world"
-        echo "it works"
-        echo ${{ vars.TF_STATE_BUCKET }}
-        echo $TF_STATE_BUCKET
-
     - name: Configure Terraform Backend
       run: |
         cat > backend.tf << EOF
         terraform {
           backend "s3" {
-            bucket               = "$TF_STATE_BUCKET"
-            region               = "$TF_STATE_REGION"
-            key                  = "$TF_STATE_BUCKET_KEY"
-            workspace_key_prefix = "$TF_STATE_WORKSPACE_KEY_PREFIX"
+            bucket               = "${{ vars.TF_STATE_BUCKET }}"
+            region               = "${{ vars.TF_STATE_REGION }}"
+            key                  = "${{ vars.TF_STATE_BUCKET_KEY }}"
+            workspace_key_prefix = "${{ vars.TF_STATE_WORKSPACE_KEY_PREFIX }}"
           }
         }
         EOF
