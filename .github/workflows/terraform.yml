@@ -31,7 +31,7 @@ jobs:
         echo "hello world"
         echo "it works"
         echo ${{ vars.TF_STATE_BUCKET }}
-        echo ${{ TF_STATE_BUCKET }}
+        echo $TF_STATE_BUCKET
 
     - name: Configure Terraform Backend
       run: |
