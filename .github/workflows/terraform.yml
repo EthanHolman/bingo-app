@@ -30,7 +30,8 @@ jobs:
       run: |
         echo "hello world"
         echo "it works"
-        echo $TF_STATE_BUCKET
+        echo ${{ vars.TF_STATE_BUCKET }}
+        echo ${{ TF_STATE_BUCKET }}
 
     - name: Configure Terraform Backend
       run: |
