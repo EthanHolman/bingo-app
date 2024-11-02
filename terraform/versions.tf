@@ -11,4 +11,7 @@ terraform {
 
 provider "aws" {
   region = "us-west-2"
+  default_tags {
+    tags = local.shared_tags
+  }
 }

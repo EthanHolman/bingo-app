@@ -3,7 +3,9 @@
 *.tfstate.*
 .terraform/
 .terragrunt-cache/
-terraform/backend.tf
+backend.tf
+*.tfvars
+*.tfvars.json
 
 # Keys
 *.pem
