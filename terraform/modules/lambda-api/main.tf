@@ -44,17 +44,30 @@ resource "aws_apigatewayv2_stage" "default" {
   auto_deploy = true
 }
 
+data "archive_file" "api_src" {
+  type        = "zip"
+  source_dir  = var.api_src_path
+  output_path = "./.terraform/build/project_dependencies.zip"
+}
+
+resource "aws_lambda_layer_version" "project_dependencies" {
+  layer_name       = "${var.resource_prefix}project-dependencies"
+  filename         = data.archive_file.api_src.output_path
+  source_code_hash = filebase64sha256(data.archive_file.api_src.output_path)
+}
+
 
 module "endpoints" {
   source = "../lambda-api-endpoint"
 
   for_each = var.api_endpoints
 
-  api_gw_id        = aws_apigatewayv2_api.api.id
-  lambda_role      = aws_iam_role.lambda_exec_role.arn
-  src_archive_path = var.src_archive_path
-  resource_prefix  = var.resource_prefix
+  api_gw_id       = aws_apigatewayv2_api.api.id
+  lambda_role     = aws_iam_role.lambda_exec_role.arn
+  resource_prefix = var.resource_prefix
+  lambda_layers   = [aws_lambda_layer_version.project_dependencies.arn]
 
-  endpoint_name  = each.key
-  endpoint_route = each.value
+  endpoint_name     = each.key
+  endpoint_route    = each.value.route
+  endpoint_src_file = each.value.filename
 }

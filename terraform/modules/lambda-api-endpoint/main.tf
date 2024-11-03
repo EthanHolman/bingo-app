@@ -1,13 +1,17 @@
+data "archive_file" "lambda" {
+  type        = "zip"
+  source_file = var.endpoint_src_file
+  output_path = "./.terraform/build/${local.function_name}.zip"
+}
+
 resource "aws_lambda_function" "lambda_fn" {
-  filename      = var.src_archive_path
-  function_name = local.function_name
-  role          = var.lambda_role
-  handler       = "${var.endpoint_name}.handler"
-
-  # source_code_hash = data.archive_file.lambda.output_base64sha256
-  source_code_hash = filebase64sha256(var.src_archive_path)
-
-  runtime = "python3.10"
+  filename         = data.archive_file.lambda.output_path
+  function_name    = local.function_name
+  role             = var.lambda_role
+  handler          = "${var.endpoint_name}.handler"
+  layers           = var.lambda_layers
+  source_code_hash = filebase64sha256(data.archive_file.lambda.output_path)
+  runtime          = "python3.10"
 }
 
 resource "aws_cloudwatch_log_group" "fn_logs" {

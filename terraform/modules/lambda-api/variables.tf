@@ -6,7 +6,7 @@ variable "resource_prefix" {
   type = string
 }
 
-variable "src_archive_path" {
+variable "api_src_path" {
   type = string
 }
 

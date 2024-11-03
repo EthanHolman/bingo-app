@@ -7,12 +7,12 @@ variable "lambda_role" {
   type = string
 }
 
-variable "src_archive_path" {
+variable "resource_prefix" {
   type = string
 }
 
-variable "resource_prefix" {
-  type = string
+variable "lambda_layers" {
+  type = list(string)
 }
 
 # Endpoint-specific
@@ -21,5 +21,9 @@ variable "endpoint_name" {
 }
 
 variable "endpoint_route" {
+  type = string
+}
+
+variable "endpoint_src_file" {
   type = string
 }
