@@ -1,7 +1,7 @@
 import json
 
 
-def lambda_handler(event, context):
+def handler(event, context):
     """
     AWS Lambda handler function.
 

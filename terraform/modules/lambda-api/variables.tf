@@ -9,3 +9,7 @@ variable "resource_prefix" {
 variable "src_archive_path" {
   type = string
 }
+
+variable "api_endpoints" {
+  type = map(any)
+}

@@ -10,4 +10,8 @@ module "api" {
   resource_prefix     = local.resource_prefix
   lambda_policy_names = var.lambda_policy_names
   src_archive_path    = data.archive_file.lambda.output_path
+  
+  api_endpoints = {
+    "get_examplee" = "ANY /examplee"
+  }
 }

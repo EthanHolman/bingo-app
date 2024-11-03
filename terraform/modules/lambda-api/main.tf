@@ -33,19 +33,28 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attach" {
   policy_arn = each.value
 }
 
-resource "aws_lambda_function" "test_lambda" {
-  filename      = var.src_archive_path
-  function_name = "${local.function_name}"
-  role          = aws_iam_role.lambda_exec_role.arn
-  handler       = "test.lambda_handler"
-
-  # source_code_hash = data.archive_file.lambda.output_base64sha256
-  source_code_hash = filebase64sha256(var.src_archive_path)
-
-  runtime = "python3.10"
+resource "aws_apigatewayv2_api" "api" {
+  name          = "${var.resource_prefix}api"
+  protocol_type = "HTTP"
 }
 
-resource "aws_cloudwatch_log_group" "fn_logs" {
-  name              = "/aws/lambda/${local.function_name}"
-  retention_in_days = 14
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.api.id
+  name        = "$default"
+  auto_deploy = true
+}
+
+
+module "endpoints" {
+  source = "../lambda-api-endpoint"
+
+  for_each = var.api_endpoints
+
+  api_gw_id        = aws_apigatewayv2_api.api.id
+  lambda_role      = aws_iam_role.lambda_exec_role.arn
+  src_archive_path = var.src_archive_path
+  resource_prefix  = var.resource_prefix
+
+  endpoint_name  = each.key
+  endpoint_route = each.value
 }
