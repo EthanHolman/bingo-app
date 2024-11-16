@@ -44,16 +44,10 @@ resource "aws_apigatewayv2_stage" "default" {
   auto_deploy = true
 }
 
-data "archive_file" "api_src" {
-  type        = "zip"
-  source_dir  = var.api_src_path
-  output_path = "./.terraform/build/project_dependencies.zip"
-}
-
 resource "aws_lambda_layer_version" "project_dependencies" {
   layer_name       = "${var.resource_prefix}project-dependencies"
-  filename         = data.archive_file.api_src.output_path
-  source_code_hash = filebase64sha256(data.archive_file.api_src.output_path)
+  filename         = var.api_src_zip
+  source_code_hash = filebase64sha256(var.api_src_zip)
 }
 
 

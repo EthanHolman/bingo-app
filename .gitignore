@@ -12,3 +12,11 @@ backend.tf
 
 # other
 .local_env
+build/
+.build/
+temp/
+.temp/
+dist/
+
+# python
+__pycache__
