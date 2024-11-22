@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { BingoBoard, BingoSquare } from "./types";
-import { getRandomNumber } from "./utils";
-import "./bingo-board.css"
+import { useEffect, useState } from "react";
+import "./bingo-board.css";
+import { getRandomNumber } from "../../utils";
+import { BingoBoard, BingoSquare } from "../../types";
 
 function getText(): string {
   switch (getRandomNumber(0, 3)) {
@@ -32,15 +32,30 @@ function createMockBoard(): BingoBoard {
   };
 }
 
-export default () => {
+const BingoBoardComponent = ({
+  onSquareClick,
+}: {
+  onSquareClick: () => void;
+}) => {
   const [bingoBoard, setBingoBoard] = useState<BingoBoard>(createMockBoard);
+
+  useEffect(() => {
+    fetch(
+      "https://yfow5aon95.execute-api.us-west-2.amazonaws.com/category/on-patrol-live/square"
+    ).then((res) => {
+      console.log(res.json());
+    });
+  }, []);
+
   return (
     <div className="bingo-board">
       {bingoBoard.bingoSquares.map((square) => (
-        <div className="bingo-square" key={square.id}>
+        <div className="bingo-square" key={square.id} onClick={onSquareClick}>
           {square.text}
         </div>
       ))}
     </div>
   );
 };
+
+export default BingoBoardComponent;
