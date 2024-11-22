@@ -36,6 +36,11 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attach" {
 resource "aws_apigatewayv2_api" "api" {
   name          = "${var.resource_prefix}api"
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_headers = ["*"]
+    allow_methods = ["*"]
+  }
 }
 
 resource "aws_apigatewayv2_stage" "default" {

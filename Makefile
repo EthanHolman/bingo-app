@@ -8,6 +8,8 @@ package_api:
 iac_apply:
 	cd terraform && terraform apply
 
+deploy_api: package_api iac_apply
+
 clean:
 	rm -rf dist/
 	rm -rf .temp/
