@@ -7,12 +7,29 @@ body {
   padding: 0;
   margin: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+  background-image: linear-gradient(
+    335deg,
+    hsl(216deg 100% 62%) 0%,
+    hsl(240deg 93% 75%) 8%,
+    hsl(267deg 80% 72%) 16%,
+    hsl(292deg 65% 69%) 24%,
+    hsl(315deg 81% 71%) 33%,
+    hsl(328deg 100% 74%) 43%,
+    hsl(338deg 100% 75%) 52%,
+    hsl(350deg 100% 76%) 62%,
+    hsl(4deg 100% 77%) 71%,
+    hsl(16deg 100% 74%) 79%,
+    hsl(26deg 100% 72%) 87%,
+    hsl(33deg 100% 71%) 94%,
+    hsl(39deg 100% 71%) 100%
+  );
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,6 +46,7 @@ body {
 
 body {
   display: flex;
+  font-family: "Patrick Hand", sans-serif;
 }
 
 @media (prefers-color-scheme: light) {

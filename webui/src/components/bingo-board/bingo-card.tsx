@@ -1,22 +1,26 @@
-import "./bingo-card.css";
+import css from "./bingo-card.module.css";
 import { BingoCard } from "../../types";
 
 const BingoCardComponent = ({
   card,
   onSquareClick,
+  editMode,
 }: {
   card: BingoCard;
   onSquareClick: (index: number) => void;
+  editMode: boolean;
 }) => {
   return (
-    <div className="bingo-card">
+    <div className={css.bingoCard}>
       {card.bingoSquares.map((square, index) => (
         <div
-          className={`bingo-square ${square.checked && "checked"}`}
+          className={`${css.bingoSquare} ${square.checked && css.checked} ${
+            editMode && css.edit
+          }`}
           key={index}
           onClick={() => onSquareClick(index)}
         >
-          {square.text}
+          <div className={css.text}>{square.text}</div>
         </div>
       ))}
     </div>

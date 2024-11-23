@@ -1,0 +1,18 @@
+.iconButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  padding: 0.5rem;
+  color: #3d8bff;
+}
+
+.iconButton:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.iconButton > * {
+  margin: auto;
+}

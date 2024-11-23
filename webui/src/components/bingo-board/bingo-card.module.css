@@ -1,0 +1,31 @@
+.bingoCard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 0.25rem;
+  aspect-ratio: 1 / 1;
+  min-width: 100%;
+}
+
+.bingoSquare {
+  border: 1px solid grey;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.bingoSquare > .text {
+  text-align: center;
+  line-height: 1em;
+  margin: auto 0px;
+  overflow-wrap: break-word;
+}
+
+.bingoSquare.checked {
+  background-color: grey;
+}
+
+.bingoSquare.edit {
+  border-style: dashed;
+}
