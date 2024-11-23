@@ -1,13 +1,19 @@
-.bingo-board {
+.bingo-card {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
   gap: 3px;
   aspect-ratio: 1 / 1;
+  min-width: 100%;
 }
 
 .bingo-square {
   text-align: center;
   background-color: #e0e0e0;
   border-radius: 10px;
+}
+
+.bingo-square.checked {
+  background-color: #00cc66;
+  font-weight: bold;
 }

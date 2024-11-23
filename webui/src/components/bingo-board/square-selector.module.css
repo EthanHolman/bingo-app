@@ -1,0 +1,20 @@
+.selectorContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  min-width: 100%;
+  background: #ddd;
+  padding: 1rem;
+  border-top: 1px solid black;
+}
+
+ul {
+  margin: 0;
+  padding-left: 0;
+  list-style-type: none;
+  max-height: 25%;
+}
+
+ul > li {
+  margin: 0;
+}

@@ -1,7 +1,10 @@
+import GameManagerComponent from "../../components/game-manager";
+
 const CardRouteComponent = () => {
   return (
     <>
-      <div>Card</div>
+      <h1>Card Name</h1>
+      <GameManagerComponent />
     </>
   );
 };

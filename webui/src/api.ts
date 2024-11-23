@@ -20,3 +20,13 @@ export function createNewCategory(categoryName: string): Promise<Category> {
     body: JSON.stringify({ category: categoryName }),
   }).then((res) => res.json());
 }
+
+export function createNewCategorySquare(
+  categoryName: string,
+  squareText: string
+): Promise<Response> {
+  return fetch(`${API_BASE_URL}/category/${categoryName}/square`, {
+    method: "POST",
+    body: JSON.stringify({ square: squareText }),
+  });
+}

@@ -1,12 +1,12 @@
-export type BingoSquare = {
+export type BingoCardSquare = {
   text: string;
   checked: boolean;
 };
 
-export type BingoBoard = {
+export type BingoCard = {
   id: number;
   name: string;
-  bingoSquares: BingoSquare[];
+  bingoSquares: BingoCardSquare[];
 };
 
 export type Category = {
