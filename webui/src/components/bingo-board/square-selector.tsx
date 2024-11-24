@@ -1,5 +1,5 @@
 import { useState } from "react";
-import classes from "./square-selector.module.css";
+import css from "./square-selector.module.css";
 import { createNewCategorySquare } from "../../api";
 
 const SquareSelector = ({
@@ -9,11 +9,12 @@ const SquareSelector = ({
   squares: string[];
   onSelect: (square: string) => void;
 }) => {
-  const [selection, setSelection] = useState(squares[0]);
   const [userEntry, setUserEntry] = useState("");
   const [creating, setCreating] = useState(false);
 
   // const matches = squares.filter((x) => x.includes(userEntry.toLowerCase()));
+
+  const hideSubmitButton = userEntry.length === 0;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,29 +27,34 @@ const SquareSelector = ({
   };
 
   return (
-    <div className={classes.selectorContainer}>
-      <select value={selection} onChange={(e) => setSelection(e.target.value)}>
-        {squares.map((square) => (
-          <option key={square} value={square}>
-            {square}
-          </option>
-        ))}
-      </select>
-      <button type="button" onClick={() => onSelect(selection)}>
-        Use This!
-      </button>
-      <div>--or--</div>
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          placeholder="Create your own..."
-          value={userEntry}
-          onChange={(e) => setUserEntry(e.currentTarget.value)}
-        />
-        <button type="submit" disabled={creating}>
-          Create New
-        </button>
-      </form>
+    <div className={css.clear}>
+      <div className={css.content}>
+        <h2>Choose one of these:</h2>
+        <ul className={css.existingSelect}>
+          {squares.map((square) => (
+            <li key={square} onClick={() => onSelect(square)}>
+              {square}
+            </li>
+          ))}
+        </ul>
+        <form onSubmit={onSubmit}>
+          <div className={css.createNew}>
+            <input
+              type="text"
+              placeholder="Or, create your own..."
+              value={userEntry}
+              onChange={(e) => setUserEntry(e.currentTarget.value)}
+            />
+            <button
+              type="submit"
+              disabled={creating}
+              className={`smPill orange ${hideSubmitButton && css.hidden}`}
+            >
+              Create!
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

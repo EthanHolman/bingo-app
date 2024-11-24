@@ -9,10 +9,12 @@ button {
 
 button.orange {
   background-color: #ffcb6b;
+  border-color: #3d8bff;
 }
 
 button.blue {
   background-color: #3d8bff;
+  border-color: #ffcb6b;
 }
 
 button.lgPill {
@@ -20,5 +22,13 @@ button.lgPill {
   padding: 0.5rem 2rem;
   border: 1px solid #3d8bff;
   font-size: 1.25rem;
+  color: black;
+}
+
+button.smPill {
+  border-radius: 100px;
+  padding: 0.25rem 1rem;
+  border: 1px solid #3d8bff;
+  font-size: 1rem;
   color: black;
 }

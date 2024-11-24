@@ -23,4 +23,5 @@
   padding: 1rem 0;
   background: rgba(255, 255, 255, 0.6);
   mix-blend-mode: hard-light;
+  min-width: 100%;
 }

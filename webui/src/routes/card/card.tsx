@@ -51,6 +51,10 @@ function initCard(): BingoCard {
   return existingCard ?? createCard();
 }
 
+function clearSavedCard(): void {
+  localStorage.removeItem(LS_KEY);
+}
+
 const CardRouteComponent = () => {
   const [allSquares, setAllSquares] = useState<string[]>([]);
   const [card, setCard] = useState<BingoCard>(initCard());
@@ -89,11 +93,18 @@ const CardRouteComponent = () => {
     saveCard(card);
   };
 
+  const clearBoard = () => {
+    if (window.confirm("Sure you want to reset your board?")) {
+      clearSavedCard();
+      setCard(initCard());
+    }
+  };
+
   return (
     <>
       <header className={css.header}>
         <div className={css.buttonContainer}>
-          <IconButton>
+          <IconButton onClick={clearBoard}>
             <BsArrowClockwise />
           </IconButton>
         </div>
