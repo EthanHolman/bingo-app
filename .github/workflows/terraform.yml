@@ -3,12 +3,14 @@ name: "Terraform"
 on:
   push:
     branches: ["main"]
-    # paths:
-    #   - terraform/**
+    paths:
+      - terraform/**
+      - api/**
   pull_request:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   terraform:
@@ -25,6 +27,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure AWS Creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-west-2
+          role-to-assume: ${{ secrets.CICD_RUNNER_AWS_ROLE }}
 
       - name: Configure Terraform Backend
         run: |
