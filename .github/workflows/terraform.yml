@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
+    env:
+      TF_VAR_lambda_policy_names: ${{ vars.LAMBDA_POLICY_NAMES }}
+
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -43,6 +46,7 @@ jobs:
               region               = "${{ vars.TF_STATE_REGION }}"
               key                  = "${{ vars.TF_STATE_BUCKET_KEY }}"
               workspace_key_prefix = "${{ vars.TF_STATE_WORKSPACE_KEY_PREFIX }}"
+              dynamodb_table       = "${{ vars.TF_STATE_DYNAMO_LOCK_TABLE }}"
             }
           }
           EOF
@@ -60,7 +64,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false
 
-    # On push to "main", build or change infrastructure according to Terraform configuration files
-    # - name: Terraform Apply
-    #   if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-    #   run: terraform apply -auto-approve -input=false
+      # On push to "main", build or change infrastructure according to Terraform configuration files
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
