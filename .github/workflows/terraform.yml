@@ -25,7 +25,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform
 
     steps:
       - name: Checkout
@@ -38,6 +37,7 @@ jobs:
           role-to-assume: ${{ secrets.CICD_RUNNER_AWS_ROLE }}
 
       - name: Configure Terraform Backend
+        working-directory: ./terraform
         run: |
           cat > backend.tf << EOF
           terraform {
@@ -58,13 +58,15 @@ jobs:
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
+        working-directory: ./terraform
         run: terraform init
 
-      # Generates an execution plan for Terraform
-      - name: Terraform Plan
-        run: terraform plan -input=false
+      - name: Package API
+        run: |
+          make package_api
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       - name: Terraform Apply
+        working-directory: ./terraform
         if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
