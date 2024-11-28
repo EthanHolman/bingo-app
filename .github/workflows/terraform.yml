@@ -3,9 +3,9 @@ name: "Terraform"
 on:
   push:
     branches: ["main"]
-    paths:
-      - terraform/**
-      - api/**
+    # paths:
+    #   - terraform/**
+    #   - api/**
   pull_request:
 
 permissions:
