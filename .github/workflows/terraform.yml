@@ -30,6 +30,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+        
+      - name: Package API
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          make package_api
+
       - name: Configure AWS Creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -60,10 +71,6 @@ jobs:
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
-
-      - name: Package API
-        run: |
-          make package_api
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       - name: Terraform Apply
