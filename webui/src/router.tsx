@@ -1,10 +1,14 @@
-import { createBrowserRouter } from "react-router-dom";
-import CardRouteComponent from "./routes/card/card";
-import CategoryPickerRouteComponent from "./routes/category-picker/category-picker";
+import { BrowserRouter, Route, Routes } from "react-router";
+import CategoryPickerRouteComponent from "./routes/category-picker/category-picker.tsx";
+import CardRouteComponent from "./routes/card/card.tsx";
 
-const router = createBrowserRouter([
-  { path: "/", element: <CategoryPickerRouteComponent /> },
-  { path: "/card", element: <CardRouteComponent /> },
-]);
+const Router = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<CategoryPickerRouteComponent />} />
+      <Route path="/card/:id?" element={<CardRouteComponent />} />
+    </Routes>
+  </BrowserRouter>
+);
 
-export default router;
+export default Router;

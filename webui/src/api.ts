@@ -1,4 +1,4 @@
-import { Category } from "./types";
+import { BingoCard, BingoCardSquare, Category } from "./types";
 
 const API_BASE_URL = "https://yfow5aon95.execute-api.us-west-2.amazonaws.com";
 
@@ -28,5 +28,31 @@ export function createNewCategorySquare(
   return fetch(`${API_BASE_URL}/category/${categoryName}/square`, {
     method: "POST",
     body: JSON.stringify({ square: squareText }),
+  });
+}
+
+export function createCard(
+  categoryId: string,
+  squares: BingoCardSquare[]
+): Promise<BingoCard> {
+  return fetch(`${API_BASE_URL}/card`, {
+    method: "POST",
+    body: JSON.stringify({ categoryId, squares }),
+  }).then((res) => res.json());
+}
+
+export function getCard(cardId: string): Promise<BingoCard> {
+  return fetch(`${API_BASE_URL}/card/${cardId}`, { method: "GET" }).then(
+    (res) => res.json()
+  );
+}
+
+export function updateCardSquares(
+  cardId: string,
+  squares: BingoCardSquare[]
+): Promise<Response> {
+  return fetch(`${API_BASE_URL}/card/${cardId}/squares`, {
+    method: "PUT",
+    body: JSON.stringify({ squares }),
   });
 }

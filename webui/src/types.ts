@@ -4,9 +4,12 @@ export type BingoCardSquare = {
 };
 
 export type BingoCard = {
-  id: number;
+  id: string;
   name: string;
-  bingoSquares: BingoCardSquare[];
+  category: string;
+  squares: BingoCardSquare[];
+  dateCreated: string;
+  isComplete: boolean;
 };
 
 export type Category = {

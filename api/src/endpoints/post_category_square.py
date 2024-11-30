@@ -5,7 +5,6 @@ from helpers.create_response import create_response
 
 
 def handler(event, context):
-    print(event)
     body = json.loads(event.get("body", "{}"))
     path_params = event.get("pathParameters", {})
 
@@ -22,7 +21,9 @@ def handler(event, context):
     table = dynamo.Table("bingo-app-default-datastore")
 
     # ensure category is added to 'category' collection
-    table.put_item(Item={"PK": "category", "SK": category})
+    verify = table.get_item(Key={"PK": "category", "SK": category})
+    if "Item" not in verify:
+        return create_response(400, f"category {category} does not exist yet")
 
     # add square to category
     table.put_item(Item={"PK": f"category#{category}", "SK": square})

@@ -12,7 +12,7 @@ const BingoCardComponent = ({
 }) => {
   return (
     <div className={css.bingoCard}>
-      {card.bingoSquares.map((square, index) => (
+      {card.squares.map((square, index) => (
         <div
           className={`${css.bingoSquare} ${square.checked && css.checked} ${
             editMode && css.edit

@@ -5,9 +5,11 @@ import { createNewCategorySquare } from "../../api";
 const SquareSelector = ({
   squares,
   onSelect,
+  categoryId,
 }: {
   squares: string[];
   onSelect: (square: string) => void;
+  categoryId: string;
 }) => {
   const [userEntry, setUserEntry] = useState("");
   const [creating, setCreating] = useState(false);
@@ -19,7 +21,7 @@ const SquareSelector = ({
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setCreating(true);
-    createNewCategorySquare("on-patrol-live", userEntry).then(() => {
+    createNewCategorySquare(categoryId, userEntry).then(() => {
       onSelect(userEntry);
       setUserEntry("");
       setCreating(false);

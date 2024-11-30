@@ -33,7 +33,7 @@ const CreateNewCategory = ({
     <>
       {mode === Mode.Default && (
         <button
-          className="category-link"
+          className="smPill orange"
           onClick={() => setMode(Mode.UserEntry)}
         >
           Create New Category!
@@ -48,7 +48,11 @@ const CreateNewCategory = ({
               value={newCategoryName}
               onChange={onNewCategoryNameChange}
             />
-            <button type="submit" disabled={mode === Mode.Creating}>
+            <button
+              className="smPill orange"
+              type="submit"
+              disabled={mode === Mode.Creating}
+            >
               {mode === Mode.UserEntry && "Create"}
               {mode === Mode.Creating && "Creating"}
             </button>

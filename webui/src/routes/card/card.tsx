@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import { BingoCard, BingoCardSquare } from "../../types";
-import { getCategorySquares } from "../../api";
+import {
+  createCard,
+  getCard,
+  getCategorySquares,
+  updateCardSquares,
+} from "../../api";
 import BingoCardComponent from "../../components/bingo-board/bingo-card";
 import SquareSelector from "../../components/bingo-board/square-selector";
 import css from "./card.module.css";
-import { BsArrowClockwise } from "react-icons/bs";
+import { BsArrowClockwise, BsHouse } from "react-icons/bs";
 import { BsPencil } from "react-icons/bs";
 import IconButton from "../../components/icon-button/icon-button";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 enum BingoBoardMode {
   Play,
   Edit,
+  Create,
 }
 
 function buildCardSquares(): BingoCardSquare[] {
@@ -26,93 +33,119 @@ function buildCardSquares(): BingoCardSquare[] {
   return toReturn;
 }
 
-function createCard(): BingoCard {
+function initBlankCard(): BingoCard {
   return {
-    id: 1,
-    name: "EthansBoard",
-    bingoSquares: buildCardSquares(),
+    id: "",
+    name: "",
+    category: "",
+    squares: buildCardSquares(),
+    dateCreated: "",
+    isComplete: false,
   };
 }
 
-const LS_KEY = "alpha-card-state";
-
-function getExistingCard(): BingoCard | undefined {
-  const existingCard = localStorage.getItem(LS_KEY);
-  if (existingCard) return JSON.parse(existingCard);
-}
-
-function saveCard(card: BingoCard): void {
-  localStorage.setItem(LS_KEY, JSON.stringify(card));
-}
-
-function initCard(): BingoCard {
-  const existingCard = getExistingCard();
-
-  return existingCard ?? createCard();
-}
-
-function clearSavedCard(): void {
-  localStorage.removeItem(LS_KEY);
-}
-
 const CardRouteComponent = () => {
+  const [searchParams] = useSearchParams();
+  const params = useParams();
+  const navigate = useNavigate();
+  const searchParamsCategory = searchParams.get("category");
+
   const [allSquares, setAllSquares] = useState<string[]>([]);
-  const [card, setCard] = useState<BingoCard>(initCard());
-  const [mode, setMode] = useState(BingoBoardMode.Edit);
+  const [card, setCard] = useState<BingoCard>(initBlankCard());
+  const [mode, setMode] = useState(BingoBoardMode.Create);
   const [editSquareIndex, setEditSquareIndex] = useState(-1);
 
   const showEditSquare = editSquareIndex > -1;
-  const takenSquareTexts = card.bingoSquares.map((y) => y.text);
+  const takenSquareTexts = card.squares.map((y) => y.text);
   const availableSquares = allSquares.filter(
     (x) => !takenSquareTexts.includes(x)
   );
 
   useEffect(() => {
-    getCategorySquares("on-patrol-live").then((res) => setAllSquares(res));
-  }, []);
+    if (!params.id || (params.id === "new" && !searchParamsCategory)) {
+      navigate("/");
+      return;
+    }
+
+    if (params.id === "new") {
+      setMode(BingoBoardMode.Create);
+      setCard({
+        ...initBlankCard(),
+        category: searchParamsCategory ?? card.category,
+      });
+    } else {
+      setMode(BingoBoardMode.Play);
+      getCard(params.id).then((card) => setCard(card));
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    if (card.category)
+      getCategorySquares(card.category).then((res) => setAllSquares(res));
+  }, [card.category]);
 
   const onSquareClick = (index: number) => {
+    if (index === 12) return;
+
     switch (mode) {
       case BingoBoardMode.Edit:
+      case BingoBoardMode.Create:
         setEditSquareIndex(index);
         break;
       case BingoBoardMode.Play:
-        card.bingoSquares[index].checked = !card.bingoSquares[index].checked;
-        setCard((old) => ({ ...old, bingoSquares: [...card.bingoSquares] }));
+        card.squares[index].checked = !card.squares[index].checked;
+        setCard((old) => ({ ...old, squares: [...card.squares] }));
+        saveSquareUpdatesToApi();
         break;
     }
-
-    saveCard(card);
   };
 
   const editCurrentSquareText = (text: string) => {
-    card.bingoSquares[editSquareIndex] = { text, checked: false };
-    setCard((old) => ({ ...old, bingoSquares: [...card.bingoSquares] }));
+    card.squares[editSquareIndex] = { text, checked: false };
+    setCard((old) => ({ ...old, squares: [...card.squares] }));
     setEditSquareIndex(-1);
-
-    saveCard(card);
   };
 
-  const clearBoard = () => {
-    if (window.confirm("Sure you want to reset your board?")) {
-      clearSavedCard();
-      setCard(initCard());
-    }
+  const newBoardClicked = () => {
+    if (window.confirm("Sure you want to reset your board?"))
+      navigate(`/card/new?category=${card.category}`);
+  };
+
+  const createCardClicked = () => {
+    createCard(searchParamsCategory!, card.squares).then((res) => {
+      setCard(res);
+      setMode(BingoBoardMode.Play);
+      navigate(`/card/${res.id}`);
+    });
+  };
+
+  const doneEditingClicked = () => {
+    updateCardSquares(card.id, card.squares).then(() => {
+      setMode(BingoBoardMode.Play);
+    });
+  };
+
+  const saveSquareUpdatesToApi = () => {
+    updateCardSquares(card.id, card.squares);
   };
 
   return (
     <>
       <header className={css.header}>
         <div className={css.buttonContainer}>
-          <IconButton onClick={clearBoard}>
+          <IconButton onClick={newBoardClicked}>
             <BsArrowClockwise />
           </IconButton>
         </div>
         <div className={css.title}>Bingo: On Patrol Live</div>
         <div className={css.buttonContainer}>
-          {mode === BingoBoardMode.Play && (
+          {mode === BingoBoardMode.Play ? (
             <IconButton onClick={() => setMode(BingoBoardMode.Edit)}>
               <BsPencil />
+            </IconButton>
+          ) : (
+            <IconButton onClick={() => navigate("/")}>
+              <BsHouse />
             </IconButton>
           )}
         </div>
@@ -121,24 +154,36 @@ const CardRouteComponent = () => {
         <BingoCardComponent
           card={card}
           onSquareClick={onSquareClick}
-          editMode={mode === BingoBoardMode.Edit}
+          editMode={mode !== BingoBoardMode.Play}
         />
       </div>
       {showEditSquare && (
         <SquareSelector
           squares={availableSquares}
           onSelect={(text) => editCurrentSquareText(text)}
+          categoryId={card.category}
         />
       )}
-      {mode === BingoBoardMode.Edit && (
+      {mode !== BingoBoardMode.Play && (
         <footer className={css.footer}>
-          <button
-            className="lgPill orange"
-            type="button"
-            onClick={() => setMode(BingoBoardMode.Play)}
-          >
-            Let's BINGO!
-          </button>
+          {mode === BingoBoardMode.Edit && (
+            <button
+              className="lgPill orange"
+              type="button"
+              onClick={doneEditingClicked}
+            >
+              Done Editing
+            </button>
+          )}
+          {mode === BingoBoardMode.Create && (
+            <button
+              className="lgPill orange"
+              type="button"
+              onClick={createCardClicked}
+            >
+              Create Card
+            </button>
+          )}
         </footer>
       )}
     </>

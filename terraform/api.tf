@@ -21,6 +21,18 @@ module "api" {
     "get_category_square" = {
       route    = "GET /category/{category}/square",
       filename = "${path.module}/../api/src/endpoints/get_category_square.py"
+    },
+    "post_card" = {
+      route    = "POST /card",
+      filename = "${path.module}/../api/src/endpoints/post_card.py"
+    },
+    "get_card" = {
+      route    = "GET /card/{cardId}",
+      filename = "${path.module}/../api/src/endpoints/get_card.py"
+    },
+    "put_card_squares" = {
+      route    = "PUT /card/{cardId}/squares",
+      filename = "${path.module}/../api/src/endpoints/put_card_squares.py"
     }
   }
 }

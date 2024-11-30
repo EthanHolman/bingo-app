@@ -5,9 +5,19 @@ all:
 # API #
 #######
 
+install_api:
+	cd api && pip install -r requirements.txt
+
+install_test_api:
+	cd api
+	pip install -r requirements.test.txt
+
 package_api:
 	chmod u+x ./package-api.sh
 	./package-api.sh
+
+test_api:
+	python -m pytest
 
 ######
 # UI #
