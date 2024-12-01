@@ -13,6 +13,7 @@ import { BsArrowClockwise, BsHouse } from "react-icons/bs";
 import { BsPencil } from "react-icons/bs";
 import IconButton from "../../components/icon-button/icon-button";
 import { useNavigate, useParams, useSearchParams } from "react-router";
+import { getRandomNumber } from "../../utils";
 
 enum BingoBoardMode {
   Play,
@@ -54,6 +55,7 @@ const CardRouteComponent = () => {
   const [card, setCard] = useState<BingoCard>(initBlankCard());
   const [mode, setMode] = useState(BingoBoardMode.Create);
   const [editSquareIndex, setEditSquareIndex] = useState(-1);
+  const [savingCard, setSavingCard] = useState(false);
 
   const showEditSquare = editSquareIndex > -1;
   const takenSquareTexts = card.squares.map((y) => y.text);
@@ -112,9 +114,11 @@ const CardRouteComponent = () => {
   };
 
   const createCardClicked = () => {
+    setSavingCard(true);
     createCard(searchParamsCategory!, card.squares).then((res) => {
       setCard(res);
       setMode(BingoBoardMode.Play);
+      setSavingCard(false);
       navigate(`/card/${res.id}`);
     });
   };
@@ -127,6 +131,20 @@ const CardRouteComponent = () => {
 
   const saveSquareUpdatesToApi = () => {
     updateCardSquares(card.id, card.squares);
+  };
+
+  const randomizeBoardClicked = () => {
+    const squares: BingoCardSquare[] = [];
+    const tempAllSquares = [...allSquares];
+
+    for (let i = 0; i < 24; i++) {
+      if (i === 12) squares.push({ text: "FREE", checked: true });
+
+      const r = getRandomNumber(0, tempAllSquares.length - 1);
+      squares.push({ text: tempAllSquares.splice(r, 1)[0], checked: false });
+    }
+
+    setCard({ ...card, squares });
   };
 
   return (
@@ -176,13 +194,23 @@ const CardRouteComponent = () => {
             </button>
           )}
           {mode === BingoBoardMode.Create && (
-            <button
-              className="lgPill orange"
-              type="button"
-              onClick={createCardClicked}
-            >
-              Create Card
-            </button>
+            <>
+              <button
+                className="smPill orange"
+                type="button"
+                onClick={randomizeBoardClicked}
+              >
+                Randomize Board
+              </button>
+              <button
+                className="lgPill orange"
+                type="button"
+                onClick={createCardClicked}
+                disabled={savingCard}
+              >
+                {savingCard ? "Creating..." : "Create Card"}
+              </button>
+            </>
           )}
         </footer>
       )}

@@ -1,5 +1,11 @@
 .footer {
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer > button {
+  margin-bottom: 1rem;
 }
 
 .header {
