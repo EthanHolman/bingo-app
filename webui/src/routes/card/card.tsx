@@ -46,17 +46,22 @@ function initBlankCard(): BingoCard {
 }
 
 const CardRouteComponent = () => {
+  // hooks
   const [searchParams] = useSearchParams();
   const params = useParams();
   const navigate = useNavigate();
   const searchParamsCategory = searchParams.get("category");
 
+  // state
   const [allSquares, setAllSquares] = useState<string[]>([]);
   const [card, setCard] = useState<BingoCard>(initBlankCard());
   const [mode, setMode] = useState(BingoBoardMode.Create);
   const [editSquareIndex, setEditSquareIndex] = useState(-1);
+
+  // loading states
   const [savingCard, setSavingCard] = useState(false);
 
+  // computed
   const showEditSquare = editSquareIndex > -1;
   const takenSquareTexts = card.squares.map((y) => y.text);
   const availableSquares = allSquares.filter(
@@ -77,7 +82,11 @@ const CardRouteComponent = () => {
       });
     } else {
       setMode(BingoBoardMode.Play);
-      getCard(params.id).then((card) => setCard(card));
+      setSavingCard(true);
+      getCard(params.id).then((card) => {
+        setCard(card);
+        setSavingCard(false);
+      });
     }
   }, [params.id]);
 
@@ -97,7 +106,7 @@ const CardRouteComponent = () => {
       case BingoBoardMode.Play:
         card.squares[index].checked = !card.squares[index].checked;
         setCard((old) => ({ ...old, squares: [...card.squares] }));
-        saveSquareUpdatesToApi();
+        updateCardSquares(card.id, card.squares);
         break;
     }
   };
@@ -127,10 +136,6 @@ const CardRouteComponent = () => {
     updateCardSquares(card.id, card.squares).then(() => {
       setMode(BingoBoardMode.Play);
     });
-  };
-
-  const saveSquareUpdatesToApi = () => {
-    updateCardSquares(card.id, card.squares);
   };
 
   const randomizeBoardClicked = () => {
@@ -173,6 +178,7 @@ const CardRouteComponent = () => {
           card={card}
           onSquareClick={onSquareClick}
           editMode={mode !== BingoBoardMode.Play}
+          loading={savingCard}
         />
       </div>
       {showEditSquare && (
