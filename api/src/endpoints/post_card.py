@@ -2,8 +2,9 @@ import json
 import boto3
 from datetime import datetime
 
-from helpers.card_utils import card_from_ddb, generate_card_id, validate_card_squares
+from helpers.card_utils import card_from_ddb, validate_card_squares
 from helpers.create_response import create_response
+from helpers.id_utils import generate_id
 
 
 def handler(event, context):
@@ -29,7 +30,7 @@ def handler(event, context):
     dynamo = boto3.resource("dynamodb")
     table = dynamo.Table("bingo-app-default-datastore")
 
-    card_id = generate_card_id()
+    card_id = generate_id()
 
     if not card_name:
         card_name = f"Card at {timestamp_now}"

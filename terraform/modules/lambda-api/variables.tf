@@ -13,3 +13,7 @@ variable "api_src_zip" {
 variable "api_endpoints" {
   type = map(any)
 }
+
+variable "ws_routes" {
+  type = map(any)
+}

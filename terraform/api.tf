@@ -35,4 +35,16 @@ module "api" {
       filename = "${path.module}/../api/src/endpoints/put_card_squares.py"
     }
   }
+
+  ws_routes = {
+    "$connect" = {
+      filename = "${path.module}/../api/src/ws-routes/connect.py"
+    }
+    "$disconnect" = {
+      filename = "${path.module}/../api/src/ws-routes/disconnect.py"
+    }
+    "$default" = {
+      filename = "${path.module}/../api/src/ws-routes/default.py"
+    }
+  }
 }

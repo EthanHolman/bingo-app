@@ -33,6 +33,10 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attach" {
   policy_arn = each.value
 }
 
+#############
+## HTTP API #
+#############
+
 resource "aws_apigatewayv2_api" "api" {
   name          = "${var.resource_prefix}api"
   protocol_type = "HTTP"
@@ -69,4 +73,34 @@ module "endpoints" {
   endpoint_name     = each.key
   endpoint_route    = each.value.route
   endpoint_src_file = each.value.filename
+}
+
+##########
+# WS API #
+##########
+
+resource "aws_apigatewayv2_api" "ws_api" {
+  name                       = "${var.resource_prefix}ws-api"
+  protocol_type              = "WEBSOCKET"
+  route_selection_expression = "$request.body.action"
+}
+
+resource "aws_apigatewayv2_stage" "ws_default" {
+  api_id      = aws_apigatewayv2_api.ws_api.id
+  name        = "$default"
+  auto_deploy = true
+}
+
+module "ws_routes" {
+  source = "../lambda-ws-api-route"
+
+  for_each = var.ws_routes
+
+  api_gw_id       = aws_apigatewayv2_api.ws_api.id
+  lambda_role     = aws_iam_role.lambda_exec_role.arn
+  resource_prefix = var.resource_prefix
+  lambda_layers   = [aws_lambda_layer_version.project_dependencies.arn]
+
+  route_name     = each.key
+  route_src_file = each.value.filename
 }

@@ -36,6 +36,9 @@ dev_ui: ui_install
 # CI #
 ######
 
+iac_init:
+	cd terraform && terraform init
+
 iac_apply:
 	cd terraform && terraform apply
 

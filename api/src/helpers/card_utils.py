@@ -1,10 +1,3 @@
-from nanoid import generate
-
-
-def generate_card_id():
-    return generate()
-
-
 def card_from_ddb(d) -> dict:
     return {
         "id": d.get("PK").split("#")[-1],
