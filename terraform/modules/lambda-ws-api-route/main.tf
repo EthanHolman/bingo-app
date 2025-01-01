@@ -13,6 +13,9 @@ resource "aws_lambda_function" "lambda_fn" {
   source_code_hash = filebase64sha256(data.archive_file.lambda.output_path)
   runtime          = "python3.10"
   timeout          = 15
+  environment {
+    variables = var.lambda_shared_env_vars
+  }
 }
 
 resource "aws_cloudwatch_log_group" "fn_logs" {

@@ -1,4 +1,5 @@
 def handler(event, context):
     print(event)
     print(context)
-    pass
+
+    return {"statusCode": 200}

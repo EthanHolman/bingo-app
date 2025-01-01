@@ -15,6 +15,10 @@ variable "lambda_layers" {
   type = list(string)
 }
 
+variable "lambda_shared_env_vars" {
+  type = map(any)
+}
+
 # Endpoint-specific
 variable "endpoint_name" {
   type = string

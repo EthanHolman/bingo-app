@@ -1,8 +1,8 @@
+from helpers.aws import get_apigw_client, get_apigw_endpoint_url, get_dynamo_table
+from helpers.websocket_utils import ws_send_msg
+import settings
 import logging
 from boto3.dynamodb.conditions import Key
-from helpers.aws import get_apigw_client, get_apigw_endpoint_url, get_dynamo_table
-from helpers.websocket_utils import ws_send_party_msg
-import settings
 
 logger = logging.getLogger(__name__)
 
@@ -21,16 +21,28 @@ def handler(event, context):
             raise ValueError(f"unable to find client_id: {client_id}")
 
         party_id = response["Items"][0]["partyId"]
-        card_id = response["Items"][0]["cardId"]
+
+        response = table.query(
+            IndexName=settings.DYNAMO_PARTY_INDEX_NAME,
+            KeyConditionExpression=Key("partyId").eq(party_id),
+        )
+
+        all_party_members = [
+            {"userName": x.get("userName"), "cardId": x.get("cardId")}
+            for x in response["Items"]
+        ]
 
         apigw_client = get_apigw_client(
             endpoint_url=get_apigw_endpoint_url(event["requestContext"])
         )
 
-        ws_send_party_msg(
+        ws_send_msg(
             apigw_client,
-            party_id,
-            {"action": "card_change", "data": {"cardId": card_id}},
+            client_id,
+            {
+                "action": "initial_state",
+                "data": {"partyId": party_id, "users": all_party_members},
+            },
         )
 
         return {"statusCode": 200}

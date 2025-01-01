@@ -1,9 +1,10 @@
 module "api" {
   source = "./modules/lambda-api"
 
-  resource_prefix     = local.resource_prefix
-  lambda_policy_names = var.lambda_policy_names
-  api_src_zip         = "${path.module}/../${var.api_src_zip}"
+  resource_prefix        = local.resource_prefix
+  lambda_policy_names    = var.lambda_policy_names
+  api_src_zip            = "${path.module}/../${var.api_src_zip}"
+  lambda_shared_env_vars = local.lambda_shared_env_vars
 
   api_endpoints = {
     "get_category" = {
@@ -45,6 +46,12 @@ module "api" {
     }
     "$default" = {
       filename = "${path.module}/../api/src/ws-routes/default.py"
+    }
+    "card_change" = {
+      filename = "${path.module}/../api/src/ws-routes/card_change.py"
+    }
+    "hello" = {
+      filename = "${path.module}/../api/src/ws-routes/hello.py"
     }
   }
 }

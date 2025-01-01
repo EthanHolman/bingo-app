@@ -17,3 +17,7 @@ variable "api_endpoints" {
 variable "ws_routes" {
   type = map(any)
 }
+
+variable "lambda_shared_env_vars" {
+  type = map(any)
+}

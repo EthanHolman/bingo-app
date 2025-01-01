@@ -65,10 +65,11 @@ module "endpoints" {
 
   for_each = var.api_endpoints
 
-  api_gw_id       = aws_apigatewayv2_api.api.id
-  lambda_role     = aws_iam_role.lambda_exec_role.arn
-  resource_prefix = var.resource_prefix
-  lambda_layers   = [aws_lambda_layer_version.project_dependencies.arn]
+  api_gw_id              = aws_apigatewayv2_api.api.id
+  lambda_role            = aws_iam_role.lambda_exec_role.arn
+  resource_prefix        = var.resource_prefix
+  lambda_layers          = [aws_lambda_layer_version.project_dependencies.arn]
+  lambda_shared_env_vars = var.lambda_shared_env_vars
 
   endpoint_name     = each.key
   endpoint_route    = each.value.route
@@ -96,10 +97,11 @@ module "ws_routes" {
 
   for_each = var.ws_routes
 
-  api_gw_id       = aws_apigatewayv2_api.ws_api.id
-  lambda_role     = aws_iam_role.lambda_exec_role.arn
-  resource_prefix = var.resource_prefix
-  lambda_layers   = [aws_lambda_layer_version.project_dependencies.arn]
+  api_gw_id              = aws_apigatewayv2_api.ws_api.id
+  lambda_role            = aws_iam_role.lambda_exec_role.arn
+  resource_prefix        = var.resource_prefix
+  lambda_layers          = [aws_lambda_layer_version.project_dependencies.arn]
+  lambda_shared_env_vars = var.lambda_shared_env_vars
 
   route_name     = each.key
   route_src_file = each.value.filename
