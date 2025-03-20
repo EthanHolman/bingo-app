@@ -1,8 +1,6 @@
 import json
 import logging
-from helpers.aws import get_dynamo_table
-import settings
-from boto3.dynamodb.conditions import Key
+from data_access.dynamo import get_party_members_by_party_id
 
 logger = logging.getLogger(__name__)
 
@@ -12,20 +10,18 @@ def ws_send_msg(apigw_client, recipient_id, data):
 
 
 def ws_send_party_msg(apigw_client, party_id, data, excluded_recipients=[]):
-    table = get_dynamo_table(settings.DYNAMO_TABLE_NAME)
-    response = table.query(
-        IndexName=settings.DYNAMO_PARTY_INDEX_NAME,
-        KeyConditionExpression=Key("partyId").eq(party_id),
-    )
-
-    if response["Count"] > 0:
+    party_members = get_party_members_by_party_id(party_id)
+    if len(party_members) > 0:
         players = filter(
-            lambda a: a not in excluded_recipients,
-            [x.get("PK", "").split("#")[-1] for x in response.get("Items", [])],
+            lambda a: len(a.get("clientId")) > 0
+            and a.get("clientId") not in excluded_recipients,
+            party_members,
         )
 
         for player in players:
             try:
-                ws_send_msg(apigw_client, recipient_id=player, data=data)
+                ws_send_msg(
+                    apigw_client, recipient_id=player.get("clientId"), data=data
+                )
             except Exception as e:
                 logger.error(str(e))

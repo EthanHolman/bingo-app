@@ -15,13 +15,26 @@ resource "aws_dynamodb_table" "app-datastore" {
   }
 
   attribute {
+    name = "clientId"
+    type = "S"
+  }
+
+  attribute {
     name = "partyId"
     type = "S"
   }
 
   global_secondary_index {
-    hash_key        = "partyId"
-    name            = "party_id_client_id"
-    projection_type = "ALL"
+    hash_key           = "clientId"
+    name               = "client_id"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["partyId", "userName"]
+  }
+
+  global_secondary_index {
+    hash_key           = "partyId"
+    name               = "party_id"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["clientId", "userName"]
   }
 }

@@ -9,8 +9,7 @@ install_api:
 	cd api && pip install -r requirements.txt
 
 install_test_api:
-	cd api
-	pip install -r requirements.test.txt
+	cd api && pip install -r requirements.test.txt
 
 package_api:
 	chmod u+x ./package-api.sh

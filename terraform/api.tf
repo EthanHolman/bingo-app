@@ -39,19 +39,22 @@ module "api" {
 
   ws_routes = {
     "$connect" = {
-      filename = "${path.module}/../api/src/ws-routes/connect.py"
+      filename = "${path.module}/../api/src/ws_routes/connect.py"
     }
     "$disconnect" = {
-      filename = "${path.module}/../api/src/ws-routes/disconnect.py"
+      filename = "${path.module}/../api/src/ws_routes/disconnect.py"
     }
     "$default" = {
-      filename = "${path.module}/../api/src/ws-routes/default.py"
+      filename = "${path.module}/../api/src/ws_routes/default.py"
     }
     "card_change" = {
-      filename = "${path.module}/../api/src/ws-routes/card_change.py"
+      filename = "${path.module}/../api/src/ws_routes/card_change.py"
     }
     "hello" = {
-      filename = "${path.module}/../api/src/ws-routes/hello.py"
+      filename = "${path.module}/../api/src/ws_routes/hello.py"
+    }
+    "goodbye" = {
+      filename = "${path.module}/../api/src/ws_routes/goodbye.py"
     }
   }
 }
