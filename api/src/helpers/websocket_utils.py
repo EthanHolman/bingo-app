@@ -9,6 +9,12 @@ def ws_send_msg(apigw_client, recipient_id, data):
     apigw_client.post_to_connection(Data=json.dumps(data), ConnectionId=recipient_id)
 
 
+def ws_send_error(apigw_client, recipient_id, error: str):
+    apigw_client.post_to_connection(
+        Data=json.dumps({"error": error}), ConnectionId=recipient_id
+    )
+
+
 def ws_send_party_msg(apigw_client, party_id, data, excluded_recipients=[]):
     party_members = get_party_members_by_party_id(party_id)
     if len(party_members) > 0:

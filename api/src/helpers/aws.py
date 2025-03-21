@@ -8,8 +8,12 @@ def get_apigw_client(endpoint_url: str):
     )
 
 
-def get_apigw_endpoint_url(request_context) -> str:
-    return f"https://{request_context['domainName']}/{request_context['stage']}"
+def get_apigw_endpoint_url(event) -> str:
+    return f"https://{event['requestContext']['domainName']}/{event['requestContext']['stage']}"
+
+
+def get_ws_clientid(event) -> str:
+    return event["requestContext"]["connectionId"]
 
 
 def get_dynamo_table(table_name: str):

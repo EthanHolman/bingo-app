@@ -1,5 +1,10 @@
-from helpers.aws import get_apigw_client, get_apigw_endpoint_url, get_dynamo_table
-from helpers.websocket_utils import ws_send_msg, ws_send_party_msg
+from helpers.aws import (
+    get_apigw_client,
+    get_apigw_endpoint_url,
+    get_dynamo_table,
+    get_ws_clientid,
+)
+from helpers.websocket_utils import ws_send_error, ws_send_msg, ws_send_party_msg
 import settings
 import logging
 from boto3.dynamodb.conditions import Key
@@ -8,9 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 def handler(event, context):
-    try:
-        client_id = event["requestContext"]["connectionId"]
+    apigw_client = get_apigw_client(endpoint_url=get_apigw_endpoint_url(event))
+    client_id = get_ws_clientid(event)
 
+    try:
         table = get_dynamo_table(settings.DYNAMO_TABLE_NAME)
 
         this_user_response = table.query(
@@ -32,10 +38,6 @@ def handler(event, context):
             {"userName": x.get("userName"), "cardId": x.get("PK").split("#")[-1]}
             for x in all_party_members_response["Items"]
         ]
-
-        apigw_client = get_apigw_client(
-            endpoint_url=get_apigw_endpoint_url(event["requestContext"])
-        )
 
         # send current state info to client
         ws_send_msg(
@@ -66,8 +68,10 @@ def handler(event, context):
 
     except ValueError as ve:
         logger.info(str(ve))
+        ws_send_error(apigw_client, client_id, str(ve))
         return {"statusCode": 400}
 
     except Exception as e:
         logger.error(str(e))
+        ws_send_error(apigw_client, client_id, str(e))
         return {"statusCode": 500}

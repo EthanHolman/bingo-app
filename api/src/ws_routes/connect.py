@@ -1,5 +1,5 @@
 import logging
-from helpers.aws import get_dynamo_table
+from helpers.aws import get_dynamo_table, get_ws_clientid
 from helpers.id_utils import generate_id
 import settings
 from botocore.exceptions import ClientError
@@ -17,7 +17,7 @@ def handler(event, context):
         if "cardId" not in query_string_params:
             raise ValueError("missing 'cardId' in query string")
 
-        client_id = event["requestContext"]["connectionId"]
+        client_id = get_ws_clientid(event)
         user_name = query_string_params.get("userName")
         card_id = query_string_params.get("cardId")
         party_id = query_string_params.get("partyId", generate_id())
@@ -42,7 +42,6 @@ def handler(event, context):
 
     except ClientError as sad_day:
         logger.warning(str(sad_day))
-        # return status code to client
         return {"statusCode": 400}
 
     except Exception as e:
