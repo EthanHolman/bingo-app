@@ -26,7 +26,8 @@
 }
 
 .cardContainer {
-  padding: 1rem 0;
+  padding: 1rem var(--mantine-spacing-xs);
+  margin: 0 calc(-1 * var(--mantine-spacing-md));
   background: rgba(255, 255, 255, 0.6);
   mix-blend-mode: hard-light;
   min-width: 100%;

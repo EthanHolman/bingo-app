@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BingoCard, BingoCardSquare } from "../../types";
+import { BingoCard, BingoCardSquare, MenuItem } from "../../types";
 import {
   createCard,
   getCard,
@@ -9,11 +9,11 @@ import {
 import BingoCardComponent from "../../components/bingo-board/bingo-card";
 import SquareSelector from "../../components/bingo-board/square-selector";
 import css from "./card.module.css";
-import { BsArrowClockwise, BsHouse } from "react-icons/bs";
 import { BsPencil } from "react-icons/bs";
-import IconButton from "../../components/icon-button/icon-button";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { getRandomNumber } from "../../utils";
+import { useAtom } from "jotai";
+import { CurrentTitleAtom, ExtraMenuItemsAtom } from "../../atoms";
 
 enum BingoBoardMode {
   Play,
@@ -68,6 +68,31 @@ const CardRouteComponent = () => {
     (x) => !takenSquareTexts.includes(x)
   );
 
+  const [, setAppTitle] = useAtom(CurrentTitleAtom);
+  const [, setExtraMenuItems] = useAtom(ExtraMenuItemsAtom);
+
+  useEffect(() => {
+    setAppTitle("Bingo: On Patrol Live");
+
+    return () => {
+      setExtraMenuItems([]);
+    };
+  }, []);
+
+  useEffect(() => {
+    const menuItems: MenuItem[] = [];
+
+    if (mode === BingoBoardMode.Play) {
+      menuItems.push({
+        text: "Edit Current Card",
+        onClick: () => setMode(BingoBoardMode.Edit),
+        icon: <BsPencil />,
+      });
+    }
+
+    setExtraMenuItems(menuItems);
+  }, [mode]);
+
   useEffect(() => {
     if (!params.id || (params.id === "new" && !searchParamsCategory)) {
       navigate("/");
@@ -117,11 +142,6 @@ const CardRouteComponent = () => {
     setEditSquareIndex(-1);
   };
 
-  const newBoardClicked = () => {
-    if (window.confirm("Sure you want to reset your board?"))
-      navigate(`/card/new?category=${card.category}`);
-  };
-
   const createCardClicked = () => {
     setSavingCard(true);
     createCard(searchParamsCategory!, card.squares).then((res) => {
@@ -154,25 +174,6 @@ const CardRouteComponent = () => {
 
   return (
     <>
-      <header className={css.header}>
-        <div className={css.buttonContainer}>
-          <IconButton onClick={newBoardClicked}>
-            <BsArrowClockwise />
-          </IconButton>
-        </div>
-        <div className={css.title}>Bingo: On Patrol Live</div>
-        <div className={css.buttonContainer}>
-          {mode === BingoBoardMode.Play ? (
-            <IconButton onClick={() => setMode(BingoBoardMode.Edit)}>
-              <BsPencil />
-            </IconButton>
-          ) : (
-            <IconButton onClick={() => navigate("/")}>
-              <BsHouse />
-            </IconButton>
-          )}
-        </div>
-      </header>
       <div className={css.cardContainer}>
         <BingoCardComponent
           card={card}

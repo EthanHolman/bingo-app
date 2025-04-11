@@ -16,3 +16,9 @@ export type Category = {
   id: string;
   friendlyName: string;
 };
+
+export type MenuItem = {
+  text: string;
+  icon?: JSX.Element;
+  onClick: () => void;
+};

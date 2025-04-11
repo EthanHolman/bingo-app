@@ -1,6 +1,8 @@
 import { ChangeEvent, useState } from "react";
 import { Category } from "../../types";
 import { createNewCategory } from "../../api";
+import { ActionIcon, Button, Group, TextInput } from "@mantine/core";
+import { BsX } from "react-icons/bs";
 
 enum Mode {
   Default,
@@ -32,32 +34,41 @@ const CreateNewCategory = ({
   return (
     <>
       {mode === Mode.Default && (
-        <button
-          className="smPill orange"
+        <Button
+          variant="filled"
+          color="orange"
           onClick={() => setMode(Mode.UserEntry)}
         >
           Create New Category!
-        </button>
+        </Button>
       )}
       {[Mode.UserEntry, Mode.Creating].includes(mode) && (
-        <div>
-          <form onSubmit={onSubmit}>
-            <input
-              type="text"
+        <form onSubmit={onSubmit}>
+          <Group>
+            <TextInput
+              aria-label="New category name"
               placeholder="New Category Name"
               value={newCategoryName}
               onChange={onNewCategoryNameChange}
-            />
-            <button
-              className="smPill orange"
-              type="submit"
               disabled={mode === Mode.Creating}
+            />
+            <Button
+              variant="filled"
+              color="orange"
+              type="submit"
+              loading={mode === Mode.Creating}
             >
-              {mode === Mode.UserEntry && "Create"}
-              {mode === Mode.Creating && "Creating"}
-            </button>
-          </form>
-        </div>
+              Create
+            </Button>
+            <ActionIcon
+              variant="subtle"
+              aria-label="Close category name creation"
+              onClick={() => setMode(Mode.Default)}
+            >
+              <BsX />
+            </ActionIcon>
+          </Group>
+        </form>
       )}
     </>
   );

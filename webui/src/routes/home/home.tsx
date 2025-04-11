@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { Category } from "../../types";
 import { getCategories } from "../../api";
-import css from "./category-picker.module.css";
+import css from "./home.module.css";
 import CreateNewCategory from "./create-new-category";
 import { Link } from "react-router";
+import { useAtom } from "jotai";
+import { CurrentTitleAtom } from "../../atoms";
 
-const CategoryPickerRouteComponent = () => {
+const HomeRouteComponent = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loaded, setLoaded] = useState(false);
+
+  const [_, setAppTitle] = useAtom(CurrentTitleAtom);
 
   const onCreateNewCategory = (newCategory: Category) => {
     setCategories((old) => [...old, newCategory]);
   };
 
   useEffect(() => {
+    setAppTitle("Choose a Bingo Category");
     getCategories().then((categories) => {
       setCategories(categories);
       setLoaded(true);
@@ -22,7 +27,6 @@ const CategoryPickerRouteComponent = () => {
 
   return (
     <>
-      <h1>Choose a Bingo Category</h1>
       <ul className={css.categories}>
         {loaded && (
           <>
@@ -48,4 +52,4 @@ const CategoryPickerRouteComponent = () => {
   );
 };
 
-export default CategoryPickerRouteComponent;
+export default HomeRouteComponent;

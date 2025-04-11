@@ -10,7 +10,7 @@ body {
   overflow: hidden;
 }
 
-:root {
+/* :root {
   color-scheme: light;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -65,4 +65,4 @@ input {
   button {
     background-color: #f9f9f9;
   }
-}
+} */

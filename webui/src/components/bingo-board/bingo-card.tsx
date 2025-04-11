@@ -1,6 +1,7 @@
 import css from "./bingo-card.module.css";
 import { BingoCard } from "../../types";
 import Spinner from "../spinner/spinner";
+import { Text } from "@mantine/core";
 
 const BingoCardComponent = ({
   card,
@@ -23,7 +24,9 @@ const BingoCardComponent = ({
           key={index}
           onClick={() => onSquareClick(index)}
         >
-          <div className={css.text}>{square.text}</div>
+          <Text size="xs" className={css.text}>
+            {square.text}
+          </Text>
         </div>
       ))}
       {loading && (
